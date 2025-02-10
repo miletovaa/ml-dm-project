@@ -4,7 +4,7 @@ Student(s) participating in the project
 
 > [Anna Miletova 89231151 BF2-EN](https://github.com/miletovaa)
 >
-> [Mariia Kozlova BF2-EN](https://github.com/Kevenant11)
+> [Mariia Kozlova 89231113 BF2-EN](https://github.com/Kevenant11)
 
 # Project description
 The chosen type of project is *“Implementing your own data mining or machine learning algorithm”*.
