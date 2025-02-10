@@ -6,6 +6,14 @@ Student(s) participating in the project
 >
 > [Mariia Kozlova 89231113 BF2-EN](https://github.com/Kevenant11)
 
+# Launching
+
+`cd app`
+
+`npm i`
+
+`npm start`
+
 # Project description
 The chosen type of project is *“Implementing your own data mining or machine learning algorithm”*.
 
