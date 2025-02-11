@@ -1,5 +1,18 @@
-# HieroCluster
-Implementing of the Hierarchical Agglomerative Clustering algorithm in TypeScript
+# Machine Learning and Data Mining Project Proposal
+
+Student(s) participating in the project
+
+> [Anna Miletova 89231151 BF2-EN](https://github.com/miletovaa)
+>
+> [Mariia Kozlova 89231113 BF2-EN](https://github.com/Kevenant11)
+
+# Launching
+
+`cd app`
+
+`npm i`
+
+`npm start`
 
 # Project description
 The chosen type of project is *“Implementing your own data mining or machine learning algorithm”*.
@@ -24,3 +37,21 @@ Algorithms: single linkage HAC algorithm and complete linkage HAC algorithm, dis
 
 # Expected Outcomes/Goals
 Functional Hierarchical Agglomerative Clustering Algorithm with an ability to process input datasets and output clusters with support for complete linkage and single linkage methods, visual dendrogram showing the hierarchical clustering process and cluster identification. User interaction includes input of the dataset and select of the linkage method. The verification of the algorithm. Test of our implementation and comparison with the existing Python library.
+
+# Division of Work
+
+Anna:
+- Initial configuration of the project,
+- User interface for the input dataset and select of the linkage method
+- Parsing of the dataset
+- Visualisation of the dendrogram with given data
+- Code documentation on the done work
+- Comparison of the results with the results of another Python library with the same goal
+
+Mariia:
+- Implement of the core HAC algorithms
+- Calculation of the intermediate distance tables for each step
+- Visualisation of the intermediate distance tables
+- Calculation of the discovered groups of the HAC
+- Code documentation on the done work
+- Tests of our application
