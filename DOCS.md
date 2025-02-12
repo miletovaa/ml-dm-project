@@ -1,3 +1,6 @@
 # Documentation
 
-Input data format: an array of objects in a form of [ { x, y }, ... ] where values of x and y are the coordinates of a given point.
+**clusteringAlgorithm function** contains the core logic of the whole project. 
+
+Input: an array of points (Array<{x: number, y:number}>) and linkage type (0 | 1)
+Output: 
