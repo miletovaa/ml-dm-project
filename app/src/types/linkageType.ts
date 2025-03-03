@@ -1,0 +1,1 @@
+export type LinkageType = 0 | 1 // 0: Single, 1: Complete
