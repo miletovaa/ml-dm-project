@@ -1,15 +1,24 @@
-import React, { useMemo } from "react"
-import { useSetRecoilState, useRecoilValue } from "recoil"
+import React, { useMemo, useCallback, useState } from "react"
+import { useRecoilState, useRecoilValue } from "recoil"
 import classnames from "classnames"
 import { linkageTypeState, pointsState } from "../state"
 import { Points } from "../types/point"
-import { LinkageType } from "../types"
+import { DistanceMatrix, LinkageType } from "../types"
+import { clusteringAlgorithm } from "../utils/clusteringAlgorithm"
+import DistanceMatrixPlot from "./DistanceMatrixPlot"
 
 export default function UserInputContainer() {
-    const setLinkage = useSetRecoilState<LinkageType>(linkageTypeState)
+    const [linkageType, setLinkage] = useRecoilState<LinkageType>(linkageTypeState)
     const points = useRecoilValue<Points>(pointsState)
+    
+    const [matrices, setMatrices] = useState<DistanceMatrix[]>([])
 
     const isPointsEmpty = useMemo(() => points?.length === 0, [points])
+
+    const calculate = useCallback(() => {
+        const result = clusteringAlgorithm(points, linkageType)
+        setMatrices(result)
+    }, [points, linkageType])
 
     return (
         <div className="flex flex-col justify-between gap-4 py-4 px-6 bg-white rounded-lg bg-opacity-50 text-blue-400 w-1/2 min-w-[360px]">
@@ -29,8 +38,11 @@ export default function UserInputContainer() {
                         "opacity-0 size-0 m-0 p-0": isPointsEmpty,
                         "opacity-100 mt-4 py-2 size-auto": !isPointsEmpty
                     })}
-                    onClick={() => console.log("Calculating results...")}
+                    onClick={calculate}
                 >Calculate results</button>
+            </div>
+            <div className="flex flex-col gap-4 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100 overflow-y-auto max-h-60">
+                {matrices.length > 0 && matrices.map((matrix: DistanceMatrix) => <DistanceMatrixPlot matrix={matrix} />)}
             </div>
         </div>
     )

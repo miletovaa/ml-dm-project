@@ -1,0 +1,1 @@
+export type DistanceMatrix = number[][]
