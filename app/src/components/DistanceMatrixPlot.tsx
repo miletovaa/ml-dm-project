@@ -1,21 +1,23 @@
-export default function DistanceMatrix({ matrix }: { matrix: number[][] }) {
+import { DistanceMatrix as MatrixType } from "../types";
+
+export default function DistanceMatrix({ matrix }: { matrix: MatrixType }) {
     return (
-        <table className="border-collapse border border-blue-400">
+        <table className="table-fixed w-full border border-blue-400">
             <tbody>
-                <tr>
+                <tr key={0}>
                     <td className="border border-blue-400 text-center bg-blue-200"></td>
-                    {matrix.map((_, j) => (
-                        <td key={j} className="border border-blue-400 text-center bg-blue-200">
-                            e{j + 1}
+                    {matrix.map(({ id }, i) => (
+                        <td key={i} className="border border-blue-400 text-center bg-blue-200">
+                            {id}
                         </td>
                     ))}
                 </tr>
                 {matrix.map((row, i) => (
-                    <tr key={i}>
-                        <td className="border border-blue-400 text-center bg-blue-200">e{i + 1}</td>
+                    <tr key={i + 1}>
+                        <td className="border border-blue-400 text-center bg-blue-200">{row.id}</td>
 
-                        {row.map((col, j) => (
-                            <td key={j} className="border border-blue-400 text-center">{col}</td>
+                        {row.distances.map(({ distance }, j) => (
+                            <td key={j} className="border border-blue-400 text-center">{distance}</td>
                         ))}
                     </tr>
                 ))}

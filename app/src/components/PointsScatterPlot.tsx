@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil"
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import InsertNewPoint from "./InsertNewPoint"
 import { pointsState } from "../state"
-import { Points } from "../types"
+import { Point, Points } from "../types"
 import classnames from "classnames"
 
 export default function PointsScatterPlot() {
@@ -12,7 +12,7 @@ export default function PointsScatterPlot() {
     const isPointsEmpty = useMemo(() => points?.length === 0, [points])
 
     return (
-        <div className="flex flex-col justify-between bg-white rounded-lg bg-opacity-50 py-4 text-blue-400 transition-all duration-1000 min-w-[360px] w-1/2 opacity-100">
+        <div className="flex flex-col justify-between bg-white rounded-lg bg-opacity-50 py-4 text-blue-400 transition-all duration-1000 w-[360px] opacity-100">
             <InsertNewPoint />
             <div className={classnames("transition-all duration-1000",{
                 "size-0": isPointsEmpty,
@@ -27,8 +27,8 @@ export default function PointsScatterPlot() {
                             <CartesianGrid />
                             <XAxis type="number" dataKey="x" name="X" unit="" />
                             <YAxis type="number" dataKey="y" name="Y" unit="" />
-                            <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                            <Scatter data={points} fill="#72d932">
+                            <Tooltip />
+                            <Scatter data={points.map((p: Point) => ({ ...p, id: p.id + 1 }))} fill="#72d932">
                                 <LabelList dataKey="id" position="right" />
                             </Scatter>
                         </ScatterChart>

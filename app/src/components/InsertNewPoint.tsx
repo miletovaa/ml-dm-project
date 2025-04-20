@@ -21,7 +21,7 @@ export default function InsertNewPoint() {
             <span className="text-xl text-center">Add point:</span>
             <div className="flex items-center gap-4">
                 <input
-                    value={x == 0 ? "" : x}
+                    value={x === 0 ? "" : x}
                     min={0}
                     step={1}
                     className="py-2 px-4 rounded-lg bg-blue-100 text-blue-400 w-20"
@@ -30,7 +30,7 @@ export default function InsertNewPoint() {
                     onChange={(e) => setX(parseInt(e.target.value))}
                     />
                 <input
-                    value={y == 0 ? "" : y}
+                    value={y === 0 ? "" : y}
                     min={0}
                     step={1}
                     className="py-2 px-4 rounded-lg bg-blue-100 text-blue-400 w-20"

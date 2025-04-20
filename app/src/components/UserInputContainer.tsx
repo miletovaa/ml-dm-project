@@ -21,16 +21,16 @@ export default function UserInputContainer() {
     }, [points, linkageType])
 
     return (
-        <div className="flex flex-col justify-between gap-4 py-4 px-6 bg-white rounded-lg bg-opacity-50 text-blue-400 w-1/2 min-w-[360px]">
+        <div className="flex flex-col justify-between gap-4 py-4 px-6 bg-white rounded-lg bg-opacity-50 text-blue-400 w-1/2 w-[360px]">
             <div className="flex flex-col">
                 <div className="flex items-center gap-4">
                     <span className="w-full text-center text-xl">Linkage type:</span>
                     <select
                         className="w-full p-2 rounded-lg bg-blue-100 text-blue-400"
-                        onChange={(e) => setLinkage(parseInt(e.target.value) as LinkageType)}
+                        onChange={(e) => setLinkage(e.target.value as LinkageType)}
                     >
-                        <option value={0}>Single</option>
-                        <option value={1}>Complete</option>
+                        <option value="S">Single</option>
+                        <option value="C">Complete</option>
                     </select>
                 </div>
                 <button
