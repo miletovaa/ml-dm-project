@@ -1,9 +1,9 @@
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 import { useRecoilValue } from "recoil"
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts'
 import InsertNewPoint from "./InsertNewPoint"
 import { pointsState } from "../state"
-import { Point, Points } from "../types"
+import { Points } from "../types"
 import classnames from "classnames"
 
 export default function PointsScatterPlot() {
@@ -28,7 +28,7 @@ export default function PointsScatterPlot() {
                             <XAxis type="number" dataKey="x" name="X" unit="" />
                             <YAxis type="number" dataKey="y" name="Y" unit="" />
                             <Tooltip />
-                            <Scatter data={points.map((p: Point) => ({ ...p, id: p.id + 1 }))} fill="#72d932">
+                            <Scatter data={points} fill="#72d932">
                                 <LabelList dataKey="id" position="right" />
                             </Scatter>
                         </ScatterChart>

@@ -11,7 +11,7 @@ export default function InsertNewPoint() {
 
     const addNewPoint = useCallback(() => {
         if (x === 0 && y === 0) return
-        setPoints((points: Points) => [...points, { x, y, id: points.length + 1 }])
+        setPoints((points: Points) => [...points, { x, y, id: (points.length + 1).toString() }])
         setX(0)
         setY(0)
     }, [x, y, setX, setY, setPoints])

@@ -1,10 +1,11 @@
+import { DendrogramNode } from './../types/dendrogram';
 import { Points, Point, LinkageType, DistanceMatrix, ClosestPoints } from "../types"
 
 function calculateInitialDistanceMatrix(points: Points): DistanceMatrix {
     return points.map((point: Point, i: number) => ({
-        id: i + 1,
+        id: (i + 1).toString(),
         distances: points.map((_: Point, j: number) => ({
-            id: j + 1,
+            id: (j + 1).toString(),
             distance: Math.abs(point.x - points[j].x) + Math.abs(point.y - points[j].y)
         }))
     }))
@@ -28,7 +29,7 @@ function getClosestPoints(distanceMatrix: DistanceMatrix): ClosestPoints {
 function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: ClosestPoints, linkageType: LinkageType): DistanceMatrix {
     const { pointAId, pointBId } = closestPoints
 
-    function getNewDistance(id: number, pointAId: number, pointBId: number) {
+    function getNewDistance(id: string, pointAId: string, pointBId: string) {
         const { distances } = oldMatrix.find(e => e.id === id)
 
         const { distance: distanceA } = distances.find(d => d.id === pointAId)
@@ -38,7 +39,6 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
             ? Math.min(distanceA, distanceB)
             : Math.max(distanceA, distanceB)
     }
-
     return oldMatrix.reduce((accR, row) => {
         switch (row.id) {
             case pointAId:
@@ -47,7 +47,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
                 return [
                     ...accR,
                     {
-                        id: `${pointAId}${pointBId}`,
+                        id: ${pointAId}${pointBId},
                         distances: row.distances.reduce((accD, { id }) => {
                             switch (id) {
                                 case pointAId:
@@ -56,7 +56,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
                                     return [
                                         ...accD,
                                         {
-                                            id: `${pointAId}${pointBId}`,
+                                            id: ${pointAId}${pointBId},
                                             distance: 0
                                         }
                                     ]
@@ -85,7 +85,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
                                     return [
                                         ...accD,
                                         {
-                                            id: `${pointAId}${pointBId}`,
+                                            id: ${pointAId}${pointBId},
                                             distance: getNewDistance(row.id, pointAId, pointBId)
                                         }
                                     ]
@@ -102,20 +102,44 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
     }, [])
 }
 
-export function clusteringAlgorithm(initialPoints: Points, linkageType: LinkageType): DistanceMatrix[] {
+export function clusteringAlgorithm(initialPoints: Points, linkageType: LinkageType): { matrices: DistanceMatrix[], nodes: DendrogramNode[] } {
     const points = [...initialPoints]
 
     const distanceMatrix = calculateInitialDistanceMatrix(points)
+    const initDendrogramNodes = points.map((point, i) => ({
+        index: point.id,
+        height: 0,
+        isLeaf: true,
+    }))
 
-    const matrices = points.reduce((acc, _) => {
-        const matrix = acc[acc.length - 1]
-        const closestPoints = getClosestPoints(matrix)
+    return points.slice(0, -1).reduce((acc, _) => {
+        const { matrices, nodes } = acc
+        const lastMatrix = matrices[matrices.length - 1]
+        const closestPoints = getClosestPoints(lastMatrix)
 
-        return matrix.length > 2 ? [
-            ...acc,
-            calculateNewDistanceMatrix(matrix, closestPoints, linkageType)
-        ] : acc
-    }, [ distanceMatrix ] as DistanceMatrix[])
+        const { pointAId, pointBId, minDist } = closestPoints
 
-    return matrices
+        const updatedMatrices = lastMatrix.length > 2 ? [
+            ...matrices,
+            calculateNewDistanceMatrix(lastMatrix, closestPoints, linkageType)
+        ] : matrices
+
+        const updatedNodes = [
+            ...nodes,
+            {
+                index: ${pointAId}${pointBId},
+                height: minDist,
+                children: [
+                    nodes.find((node: DendrogramNode) => node.index === pointAId),
+                    nodes.find((node: DendrogramNode) => node.index === pointBId)
+                ]
+            }
+        ]
+
+        return {
+            matrices: updatedMatrices,
+            nodes: updatedNodes
+        }
+    }, { matrices: [ distanceMatrix ], nodes: initDendrogramNodes } as { matrices: DistanceMatrix[], nodes: any })
 }
+`

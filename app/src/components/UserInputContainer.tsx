@@ -5,19 +5,23 @@ import { linkageTypeState, pointsState } from "../state"
 import { Points } from "../types/point"
 import { DistanceMatrix, LinkageType } from "../types"
 import { clusteringAlgorithm } from "../utils/clusteringAlgorithm"
+import Dendrogram from "./Dendrogram"
 import DistanceMatrixPlot from "./DistanceMatrixPlot"
+import { DendrogramNode } from "../types/dendrogram"
 
 export default function UserInputContainer() {
     const [linkageType, setLinkage] = useRecoilState<LinkageType>(linkageTypeState)
     const points = useRecoilValue<Points>(pointsState)
     
     const [matrices, setMatrices] = useState<DistanceMatrix[]>([])
+    const [dendrogram, setDendrogram] = useState<DendrogramNode | null>(null)
 
     const isPointsEmpty = useMemo(() => points?.length === 0, [points])
 
     const calculate = useCallback(() => {
         const result = clusteringAlgorithm(points, linkageType)
-        setMatrices(result)
+        setMatrices(result.matrices)
+        setDendrogram(result.nodes[result.nodes.length - 1])
     }, [points, linkageType])
 
     return (
@@ -42,6 +46,7 @@ export default function UserInputContainer() {
                 >Calculate results</button>
             </div>
             <div className="flex flex-col gap-4 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100 overflow-y-auto max-h-60">
+                <Dendrogram data={dendrogram} />
                 {matrices.length > 0 && matrices.map((matrix: DistanceMatrix) => <DistanceMatrixPlot matrix={matrix} />)}
             </div>
         </div>
