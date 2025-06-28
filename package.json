@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "classnames": "^2.5.1",
-    "recharts": "^3.0.2",
-    "recoil": "^0.7.7"
+    "classnames": "^2.5.1"
   }
 }

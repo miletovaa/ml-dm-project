@@ -21,7 +21,8 @@
   "scripts": {
     "start": "concurrently \"npm run dev\" \"npm run tailwind\"",
     "dev": "react-scripts start",
-    "tailwind": "npx tailwindcss -i ./src/assets/styles/input.css -o ./src/assets/styles/output.css --watch"
+    "tailwind": "npx tailwindcss -i ./src/assets/styles/input.css -o ./src/assets/styles/output.css --watch",
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
