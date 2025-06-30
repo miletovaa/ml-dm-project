@@ -40,6 +40,7 @@ npm start
 
 ## Project structure:
 
+```
 app/
 ├── src/
 │   ├── components/
@@ -59,7 +60,7 @@ app/
 │   ├── state.ts
 │   ├── App.tsx
 │   └── index.tsx
-
+```
 
 ## Key functions
 
