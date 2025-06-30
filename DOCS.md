@@ -5,7 +5,8 @@
 ```
 git clone https://github.com/miletovaa/ml-dm-project.git
 cd ./ml-dm-project/app
-npm run dev
+npm i
+npm start
 ``` 
 
 ## User Guide
@@ -32,7 +33,7 @@ npm run dev
     { id: '2', x: 4, y: 4 },
     { id: '3', x: 1, y: 2 },
     { id: '4', x: 1, y: 1 },
-    { id: '5', x: 2, y: 1 },
+    { id: '5', x: 3, y: 1 },
     { id: '6', x: 10, y: 10 }
 ```
 
@@ -47,7 +48,6 @@ app/
 │   │   ├── InsertNewPoint.tsx
 │   │   ├── PointsScatterPlot.tsx
 │   │   └── UserInputContainer.tsx
-│   ├── state/
 │   ├── types/
 │   │   ├── dendrogram.ts
 │   │   ├── linkageType.ts
@@ -56,6 +56,7 @@ app/
 │   ├── utils/
 │   │   ├── clusteringAlgorithm.ts
 │   │   └── dendrogram.ts
+│   ├── state.ts
 │   ├── App.tsx
 │   └── index.tsx
 
@@ -121,8 +122,12 @@ app/
     }
     ```
 
-5. `getDendrogram(data: DendrogramNode, options?): SVGElement` (dendrogram.ts)
-    *Input*: data -- final dendrogram root node, options: display settings (e.g., dimensions, font, cut height)
+5. `getClusters(dendrogram: DendrogramNode): { cutHeight: number, clusters: string[] }` (clusteringAlgorithm.ts)
+    *Input*: dendrogram root node
+    *Output*: cut height (point where we "cut" the dendrogram from which we distinguish the number and content of resulting clusters) and clusters (mentioned resulting clusters)
+
+6. `getDendrogram(data: DendrogramNode, options?): SVGElement` (dendrogram.ts)
+    *Input*: data -- final dendrogram root node, options: display settings (e.g., size, cut height)
     *Output*: An SVG element with the drawn dendrogram.
 
 ## State management

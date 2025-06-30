@@ -3,20 +3,18 @@ import * as d3 from "d3";
 
 export function getDendrogram(data, options = {}) {
     const {
-        width: width = 420,
-        height: height = 320,
-        hideLabels: hideLabels = false,
-        paddingBottom: paddingBottom = hideLabels ? 20 : 80,
+        width = 420,
+        height = 320,
+        hideLabels = false,
+        paddingBottom = hideLabels ? 20 : 80,
         innerHeight = height - paddingBottom,
-        innerWidth = width - 10,
         paddingLeft = 30,
-        h: cutHeight = undefined,
-        yLabel: yLabel = "↑ Height",
-        colors: colors = d3.schemeTableau10,
-        fontFamily: fontFamily = "Inter, sans-serif",
-        linkColor: linkColor = "grey",
-        fontSize: fontSize = 10,
-        strokeWidth: strokeWidth = 2
+        cutHeight,
+        yLabel,
+        fontFamily = "Inter, sans-serif",
+        linkColor = "grey",
+        fontSize = 10,
+        strokeWidth = 2
     } = options;
 
     const svg = d3
@@ -43,23 +41,6 @@ export function getDendrogram(data, options = {}) {
         return height - (data.data.height / maxHeight) * height;
     }
 
-    if (cutHeight) {
-        let curIndex = -1;
-        root.each((child) => {
-            if (
-                child.data.height <= cutHeight &&
-                child.data.height > 0 &&
-                child.parent &&
-                !child.parent.color
-            ) {
-                curIndex++;
-                child.color = colors[curIndex];
-            } else if (child.parent && child.parent.color) {
-                child.color = child.parent.color;
-            }
-        });
-    }
-
     clusterLayout(root);
 
     svg
@@ -81,7 +62,7 @@ export function getDendrogram(data, options = {}) {
                 .text(yLabel)
         )
         .selectAll(".tick")
-        .classed("baseline", (d) => d == 0)
+        .classed("baseline", (d) => d === 0)
         .style("font-size", `${fontSize}px`)
         .style("font-family", fontFamily);
 
@@ -124,6 +105,17 @@ export function getDendrogram(data, options = {}) {
             "V" +
             transformY(d.target)
         );
+    }
+
+    if (cutHeight) {
+        svg.append("line")
+            .attr("x1", paddingLeft)
+            .attr("x2", width)
+            .attr("y1", yScaleLinear(cutHeight) + (hideLabels ? 20 : 0))
+            .attr("y2", yScaleLinear(cutHeight) + (hideLabels ? 20 : 0))
+            .attr("stroke", "red")
+            .attr("stroke-dasharray", "4 2")
+            .attr("stroke-width", 1.5);
     }
 
     return svg.node();

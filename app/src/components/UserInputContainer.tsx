@@ -1,10 +1,10 @@
-import React, { useMemo, useCallback, useState } from "react"
+import { useMemo, useCallback, useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import classnames from "classnames"
 import { linkageTypeState, pointsState } from "../state"
 import { Points } from "../types/point"
 import { DistanceMatrix, LinkageType } from "../types"
-import { clusteringAlgorithm } from "../utils/clusteringAlgorithm"
+import { clusteringAlgorithm, getClusters } from "../utils/clusteringAlgorithm"
 import Dendrogram from "./Dendrogram"
 import DistanceMatrixPlot from "./DistanceMatrixPlot"
 import { DendrogramNode } from "../types/dendrogram"
@@ -15,13 +15,18 @@ export default function UserInputContainer() {
     
     const [matrices, setMatrices] = useState<DistanceMatrix[]>([])
     const [dendrogram, setDendrogram] = useState<DendrogramNode | null>(null)
+    const [clusters, setClusters] = useState<Array<string>>(null)
+    const [cutHeight, setCutHeight] = useState<number>(null)
 
-    const isPointsEmpty = useMemo(() => points?.length === 0, [points])
+    const isPointsEmpty = useMemo(() => points?.length < 2, [points])
 
     const calculate = useCallback(() => {
         const result = clusteringAlgorithm(points, linkageType)
         setMatrices(result.matrices)
         setDendrogram(result.nodes[result.nodes.length - 1])
+        const clustersResult = getClusters(result.nodes[result.nodes.length - 1])
+        setClusters(clustersResult.clusters)
+        setCutHeight(clustersResult.cutHeight)
     }, [points, linkageType])
 
     return (
@@ -44,10 +49,20 @@ export default function UserInputContainer() {
                     })}
                     onClick={calculate}
                 >Calculate results</button>
+                {isPointsEmpty && 
+                    <div className="text-center italic text-xs mt-2">
+                        Please add at least 2 points to calculate the results    
+                    </div>
+                }
             </div>
-            <div className="flex flex-col gap-4 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100 overflow-y-auto max-h-60">
-                <Dendrogram data={dendrogram} />
-                {matrices.length > 0 && matrices.map((matrix: DistanceMatrix) => <DistanceMatrixPlot matrix={matrix} />)}
+            <div className="flex flex-col gap-2 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100 overflow-y-auto max-h-60">
+                {clusters?.length > 0 &&
+                    <div className="text-lg">
+                        Clustering result ({clusters.length}): {clusters.map(c => `{${c}}`).join(", ")}
+                    </div>
+                }
+                <Dendrogram data={dendrogram} cutHeight={cutHeight} />
+                {matrices.length > 0 && matrices.map((matrix: DistanceMatrix, index: number) => <DistanceMatrixPlot key={index} matrix={matrix} />)}
             </div>
         </div>
     )

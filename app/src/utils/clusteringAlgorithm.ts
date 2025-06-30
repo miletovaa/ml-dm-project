@@ -1,4 +1,4 @@
-import { DendrogramNode } from './../types/dendrogram';
+import { DendrogramNode } from './../types/dendrogram'
 import { Points, Point, LinkageType, DistanceMatrix, ClosestPoints } from "../types"
 
 function calculateInitialDistanceMatrix(points: Points): DistanceMatrix {
@@ -39,6 +39,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
             ? Math.min(distanceA, distanceB)
             : Math.max(distanceA, distanceB)
     }
+
     return oldMatrix.reduce((accR, row) => {
         switch (row.id) {
             case pointAId:
@@ -47,7 +48,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
                 return [
                     ...accR,
                     {
-                        id: ${pointAId}${pointBId},
+                        id: `${pointAId}${pointBId}`,
                         distances: row.distances.reduce((accD, { id }) => {
                             switch (id) {
                                 case pointAId:
@@ -56,7 +57,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
                                     return [
                                         ...accD,
                                         {
-                                            id: ${pointAId}${pointBId},
+                                            id: `${pointAId}${pointBId}`,
                                             distance: 0
                                         }
                                     ]
@@ -85,7 +86,7 @@ function calculateNewDistanceMatrix(oldMatrix: DistanceMatrix, closestPoints: Cl
                                     return [
                                         ...accD,
                                         {
-                                            id: ${pointAId}${pointBId},
+                                            id: `${pointAId}${pointBId}`,
                                             distance: getNewDistance(row.id, pointAId, pointBId)
                                         }
                                     ]
@@ -106,7 +107,7 @@ export function clusteringAlgorithm(initialPoints: Points, linkageType: LinkageT
     const points = [...initialPoints]
 
     const distanceMatrix = calculateInitialDistanceMatrix(points)
-    const initDendrogramNodes = points.map((point, i) => ({
+    const initDendrogramNodes = points.map((point) => ({
         index: point.id,
         height: 0,
         isLeaf: true,
@@ -127,7 +128,7 @@ export function clusteringAlgorithm(initialPoints: Points, linkageType: LinkageT
         const updatedNodes = [
             ...nodes,
             {
-                index: ${pointAId}${pointBId},
+                index: `${pointAId}${pointBId}`,
                 height: minDist,
                 children: [
                     nodes.find((node: DendrogramNode) => node.index === pointAId),
@@ -142,4 +143,45 @@ export function clusteringAlgorithm(initialPoints: Points, linkageType: LinkageT
         }
     }, { matrices: [ distanceMatrix ], nodes: initDendrogramNodes } as { matrices: DistanceMatrix[], nodes: any })
 }
-`
+
+export function getClusters(dendrogram: DendrogramNode): { cutHeight: number, clusters: string[] } {
+    const heights: number[] = []
+
+    function collectHeights(node: DendrogramNode) {
+        if (node.height) {
+            heights.push(node.height)
+            node.children?.forEach(collectHeights)
+        }
+    }
+
+    collectHeights(dendrogram)
+
+    const sorted = Array.from(heights.sort((a, b) => a - b))
+
+    let maxDiff = 0
+    let maxJumpIndex = 0
+
+    for (let i = 0; i < sorted.length - 1; i++) {
+        const diff = sorted[i + 1] - sorted[i]
+        if (diff > maxDiff) {
+            maxDiff = diff
+            maxJumpIndex = i
+        }
+    }
+
+    const cutHeight = sorted[maxJumpIndex] + maxDiff / 2
+
+    const clusters: string[] = []
+
+    function collectClusters(node: DendrogramNode) {
+        if (node.height <= cutHeight) {
+            clusters.push(node.index)
+        } else {
+            node.children?.forEach(collectClusters)
+        }
+    }
+
+    collectClusters(dendrogram)
+
+    return { cutHeight, clusters }
+}
